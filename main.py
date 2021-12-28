@@ -47,6 +47,9 @@ def read_file_loop(loop=True):
     window_height = window.winfo_height()
 
     png_files = glob.glob("{}\\*.png".format(SCREENSHOTS_DIRECTORY))
+    if len(png_files) == 0:
+        return
+
     newest_png_path = max(png_files, key=os.path.getctime)
     newest_png = Image.open(newest_png_path)
 
