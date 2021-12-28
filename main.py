@@ -54,16 +54,19 @@ def read_file_loop(loop=True):
         newest_png_path = max(png_files, key=os.path.getctime)
         newest_png = Image.open(newest_png_path)
 
+        # From: https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
+        ratio = min(window_width / newest_png.width, window_height / newest_png.height)
+        new_width = max(int(newest_png.width * ratio), 1)
+        new_height = max(int(newest_png.height * ratio), 1)
+
+        # Resizing can fail if the file was only partially read
+        resized_png = newest_png.resize((new_width, new_height))
+
+    # Exceptions can occur if the screenshot is read before it is finished being written to
+    # If this is the case, do nothing and wait for the next interval
     except Exception as e:
-        printf(e)
         return
 
-    # From: https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
-    ratio = min(window_width / newest_png.width, window_height / newest_png.height)
-    new_width = max(int(newest_png.width * ratio), 1)
-    new_height = max(int(newest_png.height * ratio), 1)
-
-    resized_png = newest_png.resize((new_width, new_height))
     image = ImageTk.PhotoImage(resized_png)
     label.configure(image=image)
 
