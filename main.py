@@ -46,12 +46,17 @@ def read_file_loop(loop=True):
     window_width = window.winfo_width()
     window_height = window.winfo_height()
 
-    png_files = glob.glob("{}\\*.png".format(SCREENSHOTS_DIRECTORY))
-    if len(png_files) == 0:
-        return
+    try:
+        png_files = glob.glob("{}\\*.png".format(SCREENSHOTS_DIRECTORY))
+        if len(png_files) == 0:
+            return
 
-    newest_png_path = max(png_files, key=os.path.getctime)
-    newest_png = Image.open(newest_png_path)
+        newest_png_path = max(png_files, key=os.path.getctime)
+        newest_png = Image.open(newest_png_path)
+
+    except Exception as e:
+        printf(e)
+        return
 
     # From: https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
     ratio = min(window_width / newest_png.width, window_height / newest_png.height)
