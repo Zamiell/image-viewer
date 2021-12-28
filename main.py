@@ -46,15 +46,21 @@ def read_file_loop(loop=True):
     if loop:
         window.after(CHECK_INTERVAL_MILLISECONDS, read_file_loop)
 
-    window_width = window.winfo_width()
-    window_height = window.winfo_height()
-
     try:
+        window_width = window.winfo_width()
+        window_height = window.winfo_height()
+
         png_files = glob.glob("{}\\*.png".format(SCREENSHOTS_DIRECTORY))
         if len(png_files) == 0:
             return
 
         newest_png_path = max(png_files, key=os.path.getctime)
+
+        # Try to rename the file to itself
+        # In the case where the file is currently being written to, this will fail and will prevent corrupting the file
+        # From: https://stackoverflow.com/a/37256114/1062714
+        os.rename(newest_png_path, newest_png_path)
+
         newest_png = Image.open(newest_png_path)
 
         # From: https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
@@ -66,6 +72,7 @@ def read_file_loop(loop=True):
         resized_png = newest_png.resize((new_width, new_height))
         image = ImageTk.PhotoImage(resized_png)
         label.configure(image=image)
+        # printf("Set new image: {}".format(image))
 
     # Exceptions can occur if the screenshot is read before it is finished being written to
     # If this is the case, do nothing and wait for the next interval
