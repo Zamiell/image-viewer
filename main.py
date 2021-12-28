@@ -43,6 +43,9 @@ def read_file_loop(loop=True):
     global image
     global current_file_name
 
+    if loop:
+        window.after(CHECK_INTERVAL_MILLISECONDS, read_file_loop)
+
     window_width = window.winfo_width()
     window_height = window.winfo_height()
 
@@ -61,17 +64,13 @@ def read_file_loop(loop=True):
 
         # Resizing can fail if the file was only partially read
         resized_png = newest_png.resize((new_width, new_height))
+        image = ImageTk.PhotoImage(resized_png)
+        label.configure(image=image)
 
     # Exceptions can occur if the screenshot is read before it is finished being written to
     # If this is the case, do nothing and wait for the next interval
     except Exception as e:
         return
-
-    image = ImageTk.PhotoImage(resized_png)
-    label.configure(image=image)
-
-    if loop:
-        window.after(CHECK_INTERVAL_MILLISECONDS, read_file_loop)
 
 
 def printf(*args):
