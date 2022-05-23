@@ -2,6 +2,7 @@ import chokidar from "chokidar";
 import os from "os";
 import path from "path";
 import { QMainWindow, QWidget, QLabel, FlexLayout, QPixmap } from '@nodegui/nodegui';
+import { execPath } from "process";
 
 // https://stackoverflow.com/questions/9080085/node-js-find-home-directory-in-platform-agnostic-way
 const homeDir = os.homedir();
@@ -74,7 +75,12 @@ function watchScreenshotsDir() {
 
 function screenshotChanged(path: string) {
   const image = new QPixmap();
-  image.load(path);
+  try {
+    image.load(path);
+  } catch (err) {
+    // Sometimes, the image can be read before it is finished being written to
+    return;
+  }
 
   const scaledImage = getScaledImage(win, image);
   label.setPixmap(scaledImage);
