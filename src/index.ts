@@ -8,7 +8,7 @@ import { execPath } from "process";
 const homeDir = os.homedir();
 
 const SCREENSHOT_PATH = path.join(homeDir, "AppData", "Roaming", "StardewValley", "Screenshots", "current_area.png");
-const WINDOW_WIDTH = 958; // Half of 1080p monitor
+const WINDOW_WIDTH = 958; // Half of a 1080p monitor
 const WINDOW_HEIGHT = 1048;
 const WINDOW_X = 1913;
 const WINDOW_Y = 0;
@@ -33,7 +33,7 @@ function setupWindow() {
 
   label = new QLabel();
   rootLayout.addWidget(label);
-  screenshotChanged(SCREENSHOT_PATH); // Pretend that the screenshot changed for the initial load
+  screenshotChanged(SCREENSHOT_PATH); // Pretend that the screenshot changed for the initial load.
 
   win.setCentralWidget(centralWidget);
   win.setStyleSheet(
@@ -78,7 +78,7 @@ function screenshotChanged(path: string) {
   try {
     image.load(path);
   } catch (err) {
-    // Sometimes, the image can be read before it is finished being written to
+    // Sometimes, the image can be read before it is finished being written to.
     return;
   }
 
