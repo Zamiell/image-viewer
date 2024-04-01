@@ -20,5 +20,13 @@
     "pnpm-lock.yaml",
     "yarn.lock",
   ],
-  "words": ["isaacscript", "packagejson"],
+  "words": [
+    "corepack",
+    "isaacscript",
+    "nodegui",
+    "packagejson",
+    "Pixmap",
+    "sarisia",
+    "Stardew",
+  ],
 }

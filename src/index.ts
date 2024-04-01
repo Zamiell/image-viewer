@@ -1,13 +1,25 @@
+import {
+  FlexLayout,
+  QLabel,
+  QMainWindow,
+  QPixmap,
+  QWidget,
+} from "@nodegui/nodegui";
 import chokidar from "chokidar";
-import os from "os";
-import path from "path";
-import { QMainWindow, QWidget, QLabel, FlexLayout, QPixmap } from '@nodegui/nodegui';
-import { execPath } from "process";
+import os from "node:os";
+import path from "node:path";
 
 // https://stackoverflow.com/questions/9080085/node-js-find-home-directory-in-platform-agnostic-way
 const homeDir = os.homedir();
 
-const SCREENSHOT_PATH = path.join(homeDir, "AppData", "Roaming", "StardewValley", "Screenshots", "current_area.png");
+const SCREENSHOT_PATH = path.join(
+  homeDir,
+  "AppData",
+  "Roaming",
+  "StardewValley",
+  "Screenshots",
+  "current_area.png",
+);
 const WINDOW_WIDTH = 958; // Half of a 1080p monitor
 const WINDOW_HEIGHT = 1048;
 const WINDOW_X = 1913;
@@ -44,18 +56,20 @@ function setupWindow() {
         align-items: 'center';
         justify-content: 'center';
       }
-    `
+    `,
   );
   win.show();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
   (global as any).win = win;
 }
 
-// From: https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
-function getScaledImage(win: QMainWindow, image: QPixmap) {
+// From:
+// https://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
+function getScaledImage(mainWindow: QMainWindow, image: QPixmap) {
   const imageWidth = image.width();
   const imageHeight = image.height();
-  const windowSize = win.size();
+  const windowSize = mainWindow.size();
   const windowWidth = windowSize.width();
   const windowHeight = windowSize.height();
   const ratio = Math.min(windowWidth / imageWidth, windowHeight / imageHeight);
@@ -70,14 +84,14 @@ function watchScreenshotsDir() {
     usePolling: true,
     interval: 50,
   });
-  watcher.on('change', screenshotChanged);
+  watcher.on("change", screenshotChanged);
 }
 
-function screenshotChanged(path: string) {
+function screenshotChanged(filePath: string) {
   const image = new QPixmap();
   try {
-    image.load(path);
-  } catch (err) {
+    image.load(filePath);
+  } catch {
     // Sometimes, the image can be read before it is finished being written to.
     return;
   }
